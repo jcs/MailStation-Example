@@ -27,6 +27,7 @@
 	.equ	CONTROL_DIR_IN,		#0
 
 	.equ	CONTROL_PORT,		#0x9
+	.equ	CONTROL_STATUS_MASK,	#0xf0
 	.equ	CONTROL_STROBE_BIT,	#0
 	.equ	CONTROL_STROBE,		#(1 << CONTROL_STROBE_BIT)
 	.equ	CONTROL_LINEFEED_BIT,	#1
@@ -48,7 +49,8 @@ _wifi_init::
 	; lower control lines
 	ld	a, #CONTROL_DIR_OUT
 	out	(#CONTROL_DIR), a
-	xor	a
+	in	a, (#CONTROL_PORT)
+	and	#CONTROL_STATUS_MASK
 	out	(#CONTROL_PORT), a
 	ret
 
@@ -75,7 +77,9 @@ _wifi_write::
 	ld	c, 4(ix)		; char to send
 	ld	a, #DATA_DIR_OUT
 	out	(#DATA_DIR), a		; we're sending out
-	ld	a, #CONTROL_STROBE
+	in	a, (#CONTROL_PORT)
+	and	#CONTROL_STATUS_MASK
+	set	#CONTROL_STROBE_BIT, a
 	out	(#CONTROL_PORT), a	; raise strobe
 	ld	de, #0xffff
 wait_for_ack:
@@ -94,6 +98,8 @@ got_ack:
 	ld	a, c
 	out	(#DATA_PORT), a		; write data
 	xor	a
+	in	a, (#CONTROL_PORT)
+	and	#CONTROL_STATUS_MASK
 	out	(#CONTROL_PORT), a	; lower strobe
 	ld	de, #0xffff
 wait_for_final_ack:
@@ -114,7 +120,8 @@ got_final_ack:
 	ld	hl, #0			; return 0
 	ret
 abort_send:
-	xor	a
+	in	a, (#CONTROL_PORT)
+	and	#CONTROL_STATUS_MASK
 	out	(#CONTROL_PORT), a	; lower strobe
 	pop	de
 	pop	bc
@@ -137,7 +144,9 @@ _wifi_read::
 	jr	nz, recv_done
 	ld	a, #DATA_DIR_IN
 	out	(#DATA_DIR), a		; we're reading in
-	ld	a, #CONTROL_LINEFEED	; raise linefeed
+	in	a, (#CONTROL_PORT)
+	and	#CONTROL_STATUS_MASK
+	set	#CONTROL_LINEFEED_BIT, a ; raise linefeed
 	out	(#CONTROL_PORT), a
 	ld	de, #0xffff
 wait_for_busy_ack:
@@ -157,7 +166,8 @@ read_data:
 	ld	h, #0
 	ld	l, a
 raise_lf:
-	xor	a
+	in	a, (#CONTROL_PORT)
+	and	#CONTROL_STATUS_MASK
 	out	(#CONTROL_PORT), a	; lower linefeed
 recv_done:
 	pop	de
