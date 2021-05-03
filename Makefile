@@ -79,8 +79,8 @@ wifi.rel: lib/wifi.s
 
 # generated code
 
-lib/font/spleen-5x8.inc: lib/font/spleen-5x8.hex
-	ruby $(SRCDIR)/lib/tools/hexfont2inc.rb $> > $(SRCDIR)/${.TARGET}
+$(SRCDIR)/lib/font/spleen-5x8.inc: $(SRCDIR)/lib/font/spleen-5x8.hex
+	ruby $(SRCDIR)/lib/tools/hexfont2inc.rb $> > ${.TARGET}
 
 # all relocation files for final ihx
 REL_FILES=	crt0.rel putchar.rel getchar.rel wifi.rel
