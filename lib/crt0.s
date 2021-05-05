@@ -205,8 +205,18 @@ _debug4::
 _exit::
 	call	_reboot
 
-_powerdown_mode::
-	call	#0x0a6b			; firmware powerdownmode function
+_powerdown::
+	; TODO: figure out what else needs to be set before shutting down to
+	; prevent it going to the "Reset System Data" screen on next startup
+	ld	hl, (#p28shadow)
+	ld	a, (hl)
+	set	1, a			; 74c74 pin4
+	set	0, a			; modem reset
+	ld	(hl), a
+	di
+	out	(#0x28), a
+	halt
+	ret
 
 _reboot::
 	jp	0x0000

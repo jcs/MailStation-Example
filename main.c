@@ -23,7 +23,7 @@
 
 unsigned char lastkey;
 
-void process_keyboard(void);
+int process_keyboard(void);
 void process_input(unsigned char b);
 
 int
@@ -40,11 +40,14 @@ main(void)
 	printf("Hello, World\n");
 
 	for (;;) {
-		process_keyboard();
+		if (process_keyboard() == KEY_POWER)
+			break;
 	}
+
+	return 0;
 }
 
-void
+int
 process_keyboard(void)
 {
 	unsigned char b;
@@ -60,14 +63,12 @@ process_keyboard(void)
 		lastkey = b;
 
 	if (b == 0)
-		return;
+		return 0;
 
 	switch (b) {
 	case KEY_POWER:
-#if 0
-		/* XXX: this triggers erroneously */
-		powerdown_mode();
-#endif
+		delay(100);
+		powerdown();
 		break;
 	case KEY_F1:
 		break;
@@ -90,4 +91,6 @@ process_keyboard(void)
 	default:
 		putchar(b);
 	}
+
+	return b;
 }
