@@ -38,10 +38,6 @@
 	.equ	lcd_buf,		#0xc010
 	.equ	lcd_buf_end,		#lcd_buf + ((LCD_WIDTH * LCD_HEIGHT) / 8) - 1
 
-	.equ	_obuf,			#0xf500
-	.equ	_obuf_pos,		#0xf704
-
-	; some constants from mailstion.h
 	.equ	LCD_WIDTH,		#160 * 2		  ; 320
 	.equ	LCD_HEIGHT,		#128
 	.equ	LCD_COL_GROUPS,		#20
@@ -74,10 +70,6 @@
 	.globl	_saved_cursorx
 	.globl	_saved_cursory
 	.globl	_delay
-
-	; settings
-	.globl	_obuf
-	.globl	_obuf_pos
 
 	; debug variables
 	.globl	_debug0
