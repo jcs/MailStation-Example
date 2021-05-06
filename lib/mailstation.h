@@ -63,6 +63,13 @@ __sfr __at(0x28) port28;
 #error "no LOC_RAM or LOC_FLASH defined"
 #endif
 
+/* devices to load into slot4000device or slot8000device */
+#define DEVICE_RAM		0x01
+#define DEVICE_LCD_LEFT		0x02
+#define DEVICE_DATAFLASH	0x03
+#define DEVICE_LCD_RIGHT	0x04
+#define DEVICE_MODEM		0x05
+
 /* LCD parameters (2 screens) */
 #define LCD_WIDTH		(160 * 2)	// 320
 #define LCD_HEIGHT		128
