@@ -32,8 +32,7 @@ main(void)
 	/* ignore first peekkey() if it returns power button */
 	lastkey = KEY_POWER;
 
-	clear_screen_bufs();
-	clear_screen();
+	screen_init();
 
 	wifi_init();
 

@@ -53,6 +53,23 @@ _putchar_sgr::				; current SGR for putchar()
 
 	.area   _CODE
 
+; void screen_init(void)
+; quick initialization of the screen
+_screen_init::
+	push	hl
+	call	_clear_screen_bufs
+	call	_clear_screen
+	call	_recursor
+	ld	hl, #0
+	push	hl
+	push	hl
+	call	_stamp_char
+	pop	hl
+	pop	hl
+	pop	hl
+	ret
+
+
 ; void lcd_cas(unsigned char col)
 ; enable CAS, address the LCD column col (in h), and disable CAS
 _lcd_cas::

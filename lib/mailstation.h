@@ -101,6 +101,7 @@ extern unsigned char cursory;
 extern unsigned char putchar_sgr;
 extern unsigned char putchar_quick;
 extern unsigned char *font_addr;
+extern void screen_init(void);
 extern void lcd_cas(unsigned char col);
 extern void lcd_sleep(void);
 extern void lcd_wake(void);
