@@ -37,8 +37,10 @@ OBJ?=		${SRCDIR}/obj
 
 .if ${LOC:L} == "flash"
 BASE_ADDR=	0x4000
+DEFS+=		-DLOC_FLASH
 .elif ${LOC:L} == "ram"
 BASE_ADDR=	0x8000
+DEFS+=		-DLOC_RAM
 .else
 .BEGIN:
 	@echo 'LOC must be "flash" or "ram"'
@@ -88,13 +90,13 @@ REL_FILES=	crt0.rel putchar.rel getchar.rel wifi.rel
 .for S in $(SRCS)
 REL_FILES+=	${S:R}.rel
 ${S:R}.rel: $(S)
-	$(SDCC) -c ${.TARGET} $(SRCDIR)/$(S)
+	$(SDCC) $(DEFS) -c ${.TARGET} $(SRCDIR)/$(S)
 .endfor
 
 .for S in $(ASM_SRCS)
 REL_FILES+=	${S:R}.rel
 ${S:R}.rel: $(S)
-	$(ASZ80) -o ${.TARGET} ${ADDRS_INC} $>
+	$(ASZ80) $(DEFS) -o ${.TARGET} ${ADDRS_INC} $>
 .endfor
 
 # link

@@ -44,6 +44,25 @@ __sfr __at(0x1b) rtcyears;
 __sfr __at(0x1c) rtc10years;
 __sfr __at(0x28) port28;
 
+/* defined according to whether we're running from RAM or flash */
+#ifdef LOC_RAM
+#define RUN_ADDR	0x8000
+#define RUN_DEVICE	0x8
+#define RUN_PAGE	0x7
+#define SLOT_ADDR	0x4000
+#define SLOT_DEVICE	0x6
+#define SLOT_PAGE	0x5
+#elif defined(LOC_FLASH)
+#define RUN_ADDR	0x4000
+#define RUN_DEVICE	0x6
+#define RUN_PAGE	0x5
+#define SLOT_ADDR	0x8000
+#define SLOT_DEVICE	0x8
+#define SLOT_PAGE	0x7
+#else
+#error "no LOC_RAM or LOC_FLASH defined"
+#endif
+
 /* LCD parameters (2 screens) */
 #define LCD_WIDTH		(160 * 2)	// 320
 #define LCD_HEIGHT		128
