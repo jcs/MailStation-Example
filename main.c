@@ -21,7 +21,8 @@
 
 #include "lib/mailstation.h"
 
-unsigned char lastkey;
+/* ignore first peekkey() if it returns power button */
+unsigned char lastkey = KEY_POWER;
 
 int process_keyboard(void);
 void process_input(unsigned char b);
@@ -29,9 +30,6 @@ void process_input(unsigned char b);
 int
 main(void)
 {
-	/* ignore first peekkey() if it returns power button */
-	lastkey = KEY_POWER;
-
 	screen_init();
 
 	wifi_init();

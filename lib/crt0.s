@@ -20,6 +20,9 @@
 
 	.include "mailstation.inc"
 	.globl	_main
+	.globl	l__INITIALIZER
+	.globl	s__INITIALIZER
+	.globl	s__INITIALIZED
 
 	.area	_HEADER (ABS)
 
@@ -125,9 +128,52 @@ hijump:
 	jp	RUN_ADDR + (lojump - start)
 
 lojump:
+	call	gsinit
 	call	find_shadows
 	call	_main			; main c code
 	jp	_exit
+
+
+	.area	_DATA
+
+; shadow locations
+p2shadow:
+	.dw	#0xdba2
+p3shadow:
+	.dw	#0xdba3
+p28shadow:
+	.dw	#0xdba0
+delay_func:
+	jp	0x0a5c
+
+_debug0::
+	.db	#0
+_debug1::
+	.db	#0
+_debug2::
+	.db	#0
+_debug3::
+	.db	#0
+_debug4::
+	.db	#0
+
+
+	.area   _GSINIT
+gsinit:
+	ld	bc, #l__INITIALIZER
+	ld	a, b
+	or	a, c
+	jr	z, gsinit_next
+	ld	de, #s__INITIALIZED
+	ld	hl, #s__INITIALIZER
+	ldir
+gsinit_next:
+
+	.area   _GSFINAL
+	ret
+
+
+        .area   _CODE
 
 ; set location of port shadow variables depending on firmware version
 find_shadows:
@@ -175,31 +221,6 @@ ver_3_03:				; MailStation 3.03
 	ld	hl, #p3shadow
 	ld	(hl), #0xdba6
 	ret
-
-	.area	_DATA
-
-; shadow locations
-p2shadow:
-	.dw	#0xdba2
-p3shadow:
-	.dw	#0xdba3
-p28shadow:
-	.dw	#0xdba0
-delay_func:
-	jp	0x0a5c
-
-_debug0::
-	.db	#0
-_debug1::
-	.db	#0
-_debug2::
-	.db	#0
-_debug3::
-	.db	#0
-_debug4::
-	.db	#0
-
-        .area   _CODE
 
 ; exit handler, restart
 _exit::
